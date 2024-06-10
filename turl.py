@@ -113,11 +113,21 @@ def sendinput():
     else:
         messagebox.showwarning(title = "No Turl Program Running", message = "There is no Turl Program running to take input")
 
+outbuf = ""
+
 def turloutput(text):
+    global outbuf
+    outbuf = outbuf + text
+
+def update():
     global output
-    output.insert(tk.END,text)
+    global outbuf
+    outbufbuf = outbuf
+    outbuf = ""
+    output.insert(tk.END,outbufbuf)
     output.yview(tk.END)
     root.update()
+    root.after(100,update)
 
 def clearoutput():
     global output
@@ -140,4 +150,5 @@ start_button.grid(row = 1, column = 1)
 tk.Button(text = "Enter Input", command = sendinput).grid(row = 2, column = 1)
 tk.Button(text = "Clear Output", command = clearoutput).grid(row = 2, column = 2)
 tk.Checkbutton(root, text = "Debug Mode", command = debugtoggle).grid(row = 1, column = 2)
+root.after(100,update)
 root.mainloop()
