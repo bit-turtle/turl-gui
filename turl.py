@@ -87,7 +87,7 @@ tthread.start()
 def getoutput():
     while True:
         try:
-            output = turl.stdout.read(1024)
+            output = turl.stdout.read(1)
             if output != None and output != "":
                 turloutput(output.decode())
                 done = False
