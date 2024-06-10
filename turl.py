@@ -4,7 +4,7 @@ from tkinter import simpledialog
 from tkinter import messagebox
 from tkinter.filedialog import askopenfilename
 
-import os, sys, subprocess, threading, fcntl
+import os, sys, subprocess, threading
 
 import platform
 
@@ -87,7 +87,6 @@ tthread.start()
 def getoutput():
     while True:
         try:
-            fcntl.fcntl(turl.stdout.fileno(), fcntl.F_SETFL, os.O_NONBLOCK)        
             output = turl.stdout.read(1024)
             if output != None and output != "":
                 turloutput(output.decode())
@@ -107,7 +106,6 @@ def sendinput():
     global ready
     if ready:
         value = simpledialog.askstring("Enter Input", "Enter Input:")
-        fcntl.fcntl(turl.stdin.fileno(), fcntl.F_SETFL, os.O_NONBLOCK)
         turloutput(value + "\n")
         done = False
         turl.stdin.write(value.encode()+b'\n')
