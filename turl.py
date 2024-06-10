@@ -66,9 +66,9 @@ def turlmain():
             command = [turlpath,filepath]
             if debug:
                 command = [turlpath,filepath,"debug"]
-                turloutput("[Started Debug Turl Program]" + filepath + "\n")
+                printoutput("[Started Debug Turl Program] " + filepath + "\n---\n")
             else:
-                turloutput("[Started Turl Program]" + filepath + "\n")
+                printoutput("[Started Turl Program] " + filepath + "\n---\n")
             try:
                 turl = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
                 ready = True
@@ -85,14 +85,18 @@ tthread.daemon = True
 tthread.start()
 
 def getoutput():
+    global ready
     while True:
         try:
-            output = turl.stdout.read(1)
-            if output != None and output != "":
-                turloutput(output.decode())
+            if ready:
                 done = False
-            else:
-                done = True
+                while not done:
+                    output = turl.stdout.read(1)
+                    if output != None and output != "":
+                        turloutput(output.decode())
+                        done = False
+                    else:
+                        done = True
         except:
             pass
 
@@ -108,8 +112,11 @@ def sendinput():
         value = simpledialog.askstring("Enter Input", "Enter Input:")
         turloutput(value + "\n")
         done = False
-        turl.stdin.write(value.encode()+b'\n')
-        turl.stdin.flush()
+        if ready:
+            turl.stdin.write(value.encode()+b'\n')
+            turl.stdin.flush()
+        else:
+            messagebox.showwarning(title = "No Turl Program Running", message = "The Turl Program is no longer running to process your input")
     else:
         messagebox.showwarning(title = "No Turl Program Running", message = "There is no Turl Program running to take input")
 
@@ -128,6 +135,12 @@ def update():
     output.yview(tk.END)
     root.update()
     root.after(100,update)
+
+def printoutput(text):
+    global output
+    output.insert(tk.END,text)
+    output.yview(tk.END)
+    root.update()
 
 def clearoutput():
     global output
